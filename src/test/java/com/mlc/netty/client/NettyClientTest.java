@@ -1,18 +1,27 @@
 package com.mlc.netty.client;
 
-import java.net.URISyntaxException;
-
+import org.junit.Before;
 import org.junit.Test;
+
+import io.netty.handler.codec.http.HttpMethod;
 
 public class NettyClientTest {
 
-    @Test
-    public void send() throws InterruptedException, URISyntaxException {
-        NettyClient nettyClient = new NettyClient();
+    public NettyClient nettyClient;
 
-        String url = "http://localhost";
-        Integer port = 8080;
-        String json = "{\"a\":\"123\"}";
+    @Before
+    public void setup() {
+        nettyClient = new NettyClient();
+    }
+
+    @Test
+    public void get() throws Exception {
+        nettyClient.send(HttpMethod.GET, "http://www.google.com.br", "", null);
+    }
+
+    @Test
+    public void post() throws Exception {
+        nettyClient.send(HttpMethod.POST, "https://httpbin.org/post", "{\"teste\":\"123\"}", null);
     }
 
 }

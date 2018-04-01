@@ -3,9 +3,9 @@ package com.mlc.netty.client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.CharsetUtil;
 
@@ -16,20 +16,20 @@ public class HttpHandler extends SimpleChannelInboundHandler<HttpObject> {
         if (msg instanceof HttpResponse) {
             HttpResponse response = (HttpResponse) msg;
 
-            System.err.println("STATUS: " + response.getStatus());
-            System.err.println("VERSION: " + response.getProtocolVersion());
+            System.err.println("STATUS: " + response.status());
+            System.err.println("VERSION: " + response.protocolVersion());
             System.err.println();
 
             if (!response.headers().isEmpty()) {
-                for (String name : response.headers().names()) {
-                    for (String value : response.headers().getAll(name)) {
+                for (CharSequence name : response.headers().names()) {
+                    for (CharSequence value : response.headers().getAll(name)) {
                         System.err.println("HEADER: " + name + " = " + value);
                     }
                 }
                 System.err.println();
             }
 
-            if (HttpHeaders.isTransferEncodingChunked(response)) {
+            if (HttpUtil.isTransferEncodingChunked(response)) {
                 System.err.println("CHUNKED CONTENT {");
             } else {
                 System.err.println("CONTENT {");

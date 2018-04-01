@@ -9,9 +9,11 @@ import io.netty.handler.ssl.SslContext;
 
 public class HttpRequestClientInitializer extends ChannelInitializer<SocketChannel> {
     private final SslContext sslCtx;
+    private RemoteAddressInfo remoteAddressInfo;
 
-    public HttpRequestClientInitializer(SslContext sslCtx) {
+    public HttpRequestClientInitializer(SslContext sslCtx, RemoteAddressInfo remoteAddressInfo) {
         this.sslCtx = sslCtx;
+        this.remoteAddressInfo = remoteAddressInfo;
     }
 
     @Override
@@ -20,7 +22,7 @@ public class HttpRequestClientInitializer extends ChannelInitializer<SocketChann
 
         // Enable HTTPS if necessary.
         if (sslCtx != null) {
-            p.addLast(sslCtx.newHandler(ch.alloc()));
+            p.addLast(sslCtx.newHandler(ch.alloc(), remoteAddressInfo.host(), remoteAddressInfo.port()));
         }
 
         p.addLast(new HttpClientCodec());
